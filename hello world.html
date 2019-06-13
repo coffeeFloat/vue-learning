@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./node_modules/vue/dist/vue.js"></script>
+    <style>
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">{{message}}</div>
+    <div id="app-2">
+        <span v-bind:title="message2">鼠标悬停几秒钟查看此处动态绑定的提示信息！</span>
+    </div>
+    <div id="app-3">
+        <p v-if="seen">现在你看到我了</p>
+    </div>
+    <div id="app-4">
+        <ul>
+            <!--<li v-for="todo in todos">
+                {{todo.text}}
+            </li>-->
+            <todo-item v-for="item in todos" v-bind:todo="item" v-bind:key="item.id"></todo-item>
+        </ul>
+    </div>
+    <div id="app-5">
+        <p>{{message}}</p>
+        <button v-on:click="reverseMessage">逆转消息</button>
+        <input v-model="message">
+    </div>
+    <ul>
+
+    </ul>
+</body>
+<script>
+    Vue.component('todo-item', {
+        // template: '<li>哈哈哈哈</li>',
+        props: ['todo'],
+        template: '<li>{{todo.text}}</li>'
+    })
+    var app = new Vue({
+        el: '#app',
+        data: {
+            message: 'Hello Vue!'
+        }
+    })
+    var app2 = new Vue({
+        el: '#app-2',
+        data: {
+            message2: '页面加载于 ' + new Date().toLocaleString()
+        }
+    })
+    var app3 = new Vue({
+        el: '#app-3',
+        data: {
+            seen: true
+        }
+    })
+    var app4 = new Vue({
+        el: '#app-4',
+        data: {
+            todos: [
+                {id: 0, text: '学习 JavaScript' },
+                {id: 1, text: '学习 Vue' },
+                {id: 2, text: '整个牛项目' }
+            ]
+        }
+    })
+    var app5 = new Vue({
+        el: '#app-5',
+        data: {
+            message: 'Hello World!'
+        },
+        methods: {
+            reverseMessage: function () {
+                this.message = this.message.split('').reverse().join('');
+            }
+        }
+    })
+
+</script>
+</html>

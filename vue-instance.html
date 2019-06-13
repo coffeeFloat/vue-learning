@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="./node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="app">
+        <p>{{a}}</p>
+        <button v-on:click="a = 2">change it</button>
+    </div>
+</body>
+</html>
+<script>
+    var data = {a: 1};
+    // Object.freeze(data);
+    var vm = new Vue({
+        el: '#app',
+        data: data,
+        beforeCreate: function(){
+            console.log(this.a);
+        },
+        created: function(){
+            console.log(this.a)
+        }
+    });
+    console.log(vm.$data, vm.$el);
+    /*vm.$watch('a', function(newVal, oldVal){
+        console.log(newVal, oldVal);
+    });*/
+    console.log(vm.a == data.a);
+    vm.a = 2;
+    console.log(data.a);
+    data.a = 3;
+    console.log(vm.a);
+    data.b = 2;
+
+</script>
