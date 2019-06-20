@@ -15,6 +15,7 @@
 <body>
     <!--文本-->
     <div id="app1">
+        <span >{{message}}</span>
         <span v-once>{{message}}</span>
         <button v-on:click="message = 'ellipsis'">更新文本</button>
     </div>
@@ -35,11 +36,19 @@
     </div>
 
     <!--指令 动态参数-->
-    <div id="app5">
+    <!--<div id="app5">
         <a v-bind:[attrbuteName]='url'>...</a>
         <div>
             <a v-on:[eventName]="doSomething">{{event}}</a>
         </div>
+    </div>-->
+    <!--缩写-->
+    <div id="app6">
+        <div v-bind:id="id">正常</div>
+        <div :id="id">缩写</div>
+
+        <div v-on:click="editMessage">{{message}}</div>
+        <div @click="editMessage">{{message}}</div>
     </div>
 </body>
 </html>
@@ -49,7 +58,8 @@
         vHtml:'',
         attr:'',
         js:'',
-        dynamic:''
+        dynamic:'',
+        suoxie: ''
     }
     vm.text = new Vue({
         el: '#app1',
@@ -78,7 +88,7 @@
             message: '123'
         }
     });
-    vm.dynamic = new Vue({
+    /*vm.dynamic = new Vue({
         el: '#app5',
         data: {
             attrbuteName: 'href',
@@ -89,6 +99,18 @@
         methods: {
             doSomething: function () {
                 this.data.event = 'houhouhou!'
+            }
+        }
+    })*/
+    vm.suoxie = new Vue({
+        el: "#app6",
+        data: {
+            id: 'djfjdkfd',
+            message: '我的世界'
+        },
+        methods: {
+            editMessage: function(){
+                this.message += '123';
             }
         }
     })
