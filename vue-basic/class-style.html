@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>class</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="example">
+        <div class="one" v-bind:class="{two: is2,three: is3}"></div>
+
+        <!--数据对象-->
+        <div class="one" v-bind:class="classObj"></div>
+
+        <!--计算方式对象class-->
+        <div class="one" v-bind:class="classComputed"></div>
+
+        <!--数组class-->
+        <div class="one" v-bind:class="[isActive?activeClass: '']"></div>
+        <div class="one" v-bind:class="[{active: isActive}, {error: isError}]"></div>
+
+        <!--对象style-->
+        <div v-bind:style="{color: colorSet, fontSize: fontSize + 'px', 'background-color': bgc}">hhh</div>
+        <div v-bind:style="styleObj">hello!!!</div>
+
+        <!--数组style-->
+        <div v-bind:style="[style1,style2]">hello</div>
+        <div v-bind:style="[style3,style4]">hello</div>
+
+        <!--style自动添加前缀-->
+        <div v-bind:style="{transform: yes}">bingo</div>
+
+        <!--多重值-->
+        <div v-bind:style="{display: ['-webkit-box', '-ms-flexbox', 'flex']}"></div>
+    </div>
+</body>
+</html>
+<script>
+    var vm = new Vue({
+        el: "#example",
+        data: {
+            is2: true,
+            is3: false,
+            classObj: {
+                four: true,
+                five: false
+            },
+            is6: true,
+            isActive: true,
+            isError: true,
+            activeClass: 'active',
+            fontSize: 30,
+            bgc: 'yellow',
+            style1: {
+                color: 'red',
+                fontSize: '30px'
+            },
+            style2: {
+                lineHeight: '40px',
+                textAlign: 'center'
+            },
+            yes: 'scale(1.3)'
+        },
+        computed: {
+            classComputed: function () {
+                return {
+                    six: this.is6 && !this.is3
+                }
+            },
+            colorSet: function (){
+                return this.isActive? 'red': '#ccc'
+            },
+            styleObj: function () {
+                return {
+                    'font-size': this.isActive?'24px': '12px',
+                    color: this.isError? 'red': 'green'
+                }
+            },
+            style3: function(){
+                return {
+                    color: this.isActive?'yellow': '#333',
+                    fontSize: this.isActive?'20px': '24px'
+                }
+            },
+            style4: function(){
+                return {
+                    textAlign: this.isError?'left': 'right',
+                    cursor: this.isError?'auto': 'pointer'
+                }
+            }
+
+        }
+    })
+</script>

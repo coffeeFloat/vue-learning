@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>computed</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <style>
+
+    </style>
+</head>
+<body>
+    <div id="example">
+        <div>message: {{message}}</div>
+        <div>reverse message: {{reverseMessage}}</div>
+        <div>fullName: {{fullName}}</div>
+    </div>
+</body>
+</html>
+<script>
+    var vm = new Vue({
+        el: '#example',
+        data: {
+            message: 'hello world!',
+            firstName: "yang",
+            lastName: 'fan'
+        },
+        computed: {
+            reverseMessage: function () {
+                return this.message.split('').reverse().join('');
+            },
+            fullName: {
+                get: function(){
+                    return this.firstName + ' ' + this.lastName
+                },
+                set: function (nameValue) {
+                    var names = nameValue.split(' ');
+                    this.firstName = names[0];
+                    this.lastName = names[names.length - 1];
+                }
+            }
+        }
+    })
+</script>

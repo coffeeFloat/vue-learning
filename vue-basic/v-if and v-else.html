@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>if else</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="example">
+        <div v-if="awesome">wonderful</div>
+        <div v-else>terrible</div>
+
+        <template v-if="ok">
+            <div>one</div>
+            <div>two</div>
+            <div>three</div>
+        </template>
+
+        <div v-if="type === 'A'">A</div>
+        <div v-else-if="type === 'B'">B</div>
+        <div v-else-if="type === 'C'">C</div>
+        <div v-else>none</div>
+
+        <!--无key-->
+        <template v-if="loginType === 'username'">
+            <label>Username</label>
+            <input placeholder="Enter your username">
+        </template>
+        <template v-else>
+            <label>Email</label>
+            <input placeholder="Enter your email address">
+        </template>
+
+        <!--有key-->
+        <template v-if="loginType === 'username'">
+            <label>Username</label>
+            <input placeholder="Enter your username" key="username">
+        </template>
+        <template v-else>
+            <label>Email</label>
+            <input placeholder="Enter your email address" key="userEmail">
+        </template>
+
+        <h1 v-show="ok">Hello!</h1>
+    </div>
+
+</body>
+</html>
+<script>
+    var vm = new Vue({
+        el: '#example',
+        data: {
+            awesome: true,
+            ok: true,
+            type: 'C',
+            loginType: 'username'
+        }
+    });
+</script>
