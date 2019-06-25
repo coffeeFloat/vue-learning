@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>list-render</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <style>
+        ul {
+            list-style: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="example">
+        <!--遍历数组-->
+        <ul>
+            <li v-for="item in items">{{item.message}}</li>
+        </ul>
+        <ul>
+            <li v-for="(item, index) in items">
+                {{parentMessage}} - {{index}} - {{item.message}}
+            </li>
+        </ul>
+        <ul>
+            <li v-for="item of items">
+                {{item.message}}
+            </li>
+        </ul>
+        <!--遍历对象-->
+        <ul>
+            <li v-for="value in object">
+                {{value}}
+            </li>
+            <li v-for="(value, name) in object">
+                {{value}} - {{name}}
+            </li>
+            <li v-for="(value, name, index) in object">
+                {{value}} - {{name}} - {{index}}
+            </li>
+        </ul>
+
+        <ul>
+            <li v-for="item in itemsRight" v-bind:key="item.id">
+                {{item.message}}
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
+<script>
+    var vm = new Vue({
+        el: '#example',
+        data: {
+            items: [
+                {message: "foo"},
+                {message: "bar"}
+            ],
+            parentMessage: "parentMessage",
+            object: {
+                title: 'hhhhhh',
+                author: 'Hector',
+                content: 'i do not know'
+            },
+            itemsRight: [
+                {message: 'djkfdf', id: 'df'},
+                {message: 'dfdfdfddfdf',id: 'ere'}
+            ]
+        },
+        methods: {
+
+        },
+        computed: {
+
+        }
+    });
+</script>
