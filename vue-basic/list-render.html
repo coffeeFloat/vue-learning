@@ -44,6 +44,14 @@
                 {{item.message}}
             </li>
         </ul>
+        <button @click="editItemsRight()">修改数组项</button>
+
+        <ul>
+            <li v-for="(value, name, index) in objRight">
+                {{value}} - {{name}} - {{index}}
+            </li>
+        </ul>
+        <button @click="editObjRight()">对象属性的添加/删除</button>
     </div>
 </body>
 </html>
@@ -64,10 +72,25 @@
             itemsRight: [
                 {message: 'djkfdf', id: 'df'},
                 {message: 'dfdfdfddfdf',id: 'ere'}
-            ]
+            ],
+            objRight: {
+                uername: 'lord yang',
+                age: '27',
+                favorite: 'sleep'
+            }
         },
         methods: {
-
+            editItemsRight: function(){
+                vm.$set(vm.itemsRight, 0, {message: '哈哈哈哈', id: 'jkjk'});
+                vm.itemsRight.splice(1,1,{message: '吼吼吼', id: 'dddd'})
+            },
+            editObjRight: function () {
+                vm.$set(vm.objRight, 'sex', 'man');
+                vm.objRight = Object.assign({}, vm.objRight, {
+                    height: '165cm',
+                    weight: '60kg'
+                })
+            }
         },
         computed: {
 
