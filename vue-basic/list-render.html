@@ -11,8 +11,11 @@
     </style>
 </head>
 <body>
+
+    <!--v-for 属性基本使用情况-->
     <div id="example">
         <!--遍历数组-->
+        <!--默认情况下 数据发生变化(尤其排序)时,v-for执行'就地更新'策略,更新每个元素,而不是移动DOM来重新排序-->
         <ul>
             <li v-for="item in items">{{item.message}}</li>
         </ul>
@@ -39,6 +42,7 @@
             </li>
         </ul>
 
+        <!--使用key 为每项提供唯一标识。属性值为简单数据类型 目的：方便重用/重新排序现有元素-->
         <ul>
             <li v-for="item in itemsRight" v-bind:key="item.id">
                 {{item.message}}
@@ -52,6 +56,27 @@
             </li>
         </ul>
         <button @click="editObjRight()">对象属性的添加/删除</button>
+    </div>
+
+    <!--v-for 数组更新检测-->
+    <div id="arrayChange">
+        <!--可引起视图更新的方法  vue对这些方法进行了变异-->
+        <div v-for="(item, index) in numArr" v-bind:key="item" @click="editItem(index)">{{item}}</div>
+        <button @click="pushNum()">push数据</button>
+        <button @click="unshiftNum()">unshift数据</button>
+        <button @click="sortNum()">排序数组</button>
+        <button @click="reverseNum()">反转数组</button>
+
+        <!--非变异方法, 通过重新赋值来引起视图更新-->
+        <div>
+            <button @click="sliceArr()">截取数组</button>
+        </div>
+        
+        <!--数组修改某项数据/修改数组长度-->
+        <div>
+            <!--<button @click="editItem">修改某项数据</button>-->
+            <button @click="editLength()">修改长度</button>
+        </div>
     </div>
 </body>
 </html>
@@ -80,10 +105,13 @@
             }
         },
         methods: {
+            // 数据替换
             editItemsRight: function(){
                 vm.$set(vm.itemsRight, 0, {message: '哈哈哈哈', id: 'jkjk'});
                 vm.itemsRight.splice(1,1,{message: '吼吼吼', id: 'dddd'})
             },
+
+            //
             editObjRight: function () {
                 vm.$set(vm.objRight, 'sex', 'man');
                 vm.objRight = Object.assign({}, vm.objRight, {
@@ -94,6 +122,52 @@
         },
         computed: {
 
+        }
+    });
+
+    var arrChange = new Vue({
+        el: '#arrayChange',
+        data: {
+            numArr: [2,3,1,6,4,5]
+        },
+        methods: {
+            pushNum: function () {
+                var maxNum = 0;
+                arrChange.numArr.forEach(function (item) {
+//                    console.log((item));
+                    if(item > maxNum) {
+                        maxNum = item;
+                    }
+                })
+                arrChange.numArr.push(maxNum + 1);
+            },
+            unshiftNum: function () {
+                var minNum = 1;
+                arrChange.numArr.forEach(function (item) {
+//                    console.log((item));
+                    if(item < minNum) {
+                        minNum = item;
+                    }
+                })
+                arrChange.numArr.unshift(minNum - 1);
+            },
+            sortNum: function () {
+                arrChange.numArr.sort(function (a, b) {
+                    return a >= b? 1: -1;
+                })
+            },
+            reverseNum: function () {
+                arrChange.numArr.reverse();
+            },
+            sliceArr: function () {
+                arrChange.numArr = arrChange.numArr.slice(0, 3);
+            },
+            editItem: function (index) {
+                vm.$set(arrChange.numArr, index, arrChange.numArr[index] + 10 );
+            },
+            editLength: function () {
+                arrChange.numArr.splice(4);
+            }
         }
     });
 </script>
