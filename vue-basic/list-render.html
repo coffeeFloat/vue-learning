@@ -8,6 +8,12 @@
         ul {
             list-style: none;
         }
+        .attention {
+            font-size: 24px;
+            line-height: 40px;
+            color: orange;
+            font-weight: 600;
+        }
     </style>
 </head>
 <body>
@@ -78,6 +84,33 @@
             <button @click="editLength()">修改长度</button>
         </div>
     </div>
+
+    <!--修改对象-->
+    <div id="objectChange">
+        <div v-for="(value, name, index) in changeObj">{{value}} - {{name}} - {{index}}</div>
+        <button @click="addSingleProperty()">添加单个属性</button>
+        <button @click="addMutiProperty()">添加多个属性</button>
+    </div>
+
+    <!--显示过滤/排序后数组，不改变原数组/重复整数/v-for、v-if一起使用-->
+    <div id="filterOrSort">
+        <span>数组排序：</span>
+        <div v-for="num in sortNumbers">{{num}}</div>
+
+        <span>数组过滤：</span>
+        <div v-for="num in filterNumbers(numbers)">{{num}}</div>
+
+        <span>重复整数</span>
+        <div v-for="num in 10">{{num}}</div>
+
+        <span>v-for、v-if仪器使用</span>
+        <div v-if="todos.length">
+            <div v-for="item in todos">{{item.message}}</div>
+        </div>
+        <div v-else>no todo</div>
+    </div>
+    <div class="attention">模板使用/组件使用 尚未练习</div>
+
 </body>
 </html>
 <script>
@@ -167,6 +200,51 @@
             },
             editLength: function () {
                 arrChange.numArr.splice(4);
+            }
+        }
+    });
+
+    var objChange = new Vue({
+        el: '#objectChange',
+        data: {
+            changeObj: {
+                name: 'Lord Yang',
+                age: '25'
+            }
+        },
+        methods: {
+            addSingleProperty: function () {
+                objChange.$set(objChange.changeObj,'address', 'beijing');
+            },
+            addMutiProperty: function(){
+                objChange.changeObj = Object.assign({}, objChange.changeObj, {
+                    color: 'white',
+                    food: 'fruit'
+                });
+            }
+        },
+
+
+    });
+
+    var filterOrSort = new Vue({
+        el: '#filterOrSort',
+        data: {
+            numbers: [3,2,6,7,5,1],
+            todos: [{message: 'shopping'}, {message: 'sleeping'}]
+        },
+        computed: {
+            sortNumbers: function(){
+                return this.numbers.sort(function(a,b){
+                    return a>=b?1: -1;
+                })
+            }
+        },
+        methods: {
+            filterNumbers: function(numbers){
+                return numbers.filter(function (number) {
+                    return number % 2 === 0;
+                })
             }
         }
     });

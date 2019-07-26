@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>event handle</title>
+    <style>
+
+    </style>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="eventHandle">
+        <!--事件对象 -->
+        <div>
+            <button @click="greet">event object</button>
+        </div>
+        <!--$event 参数传递顺序  结论： 可以更改顺序-->
+        <div>
+            <button @click="say('hello', $event)">say</button>
+            <button @click="eat($event, 'banana')">eat</button>
+        </div>
+        <!--事件修饰符-->
+        <div>
+            <!--prevent -> event.preventDefault 阻止文本输入-->
+            <input type="text" v-on:keypress.prevent="inputKeypress($event)">
+
+            <!--stop -> event.stopPropagation 阻止冒泡和捕获-->
+            <div @click="consoleNo()">
+                <div @click="consoleYes()">
+                    <div @click.stop="consoleHello()">
+                        <span>阻止冒泡和捕获</span>
+                        <div @click="consoleHi()"></div>
+                    </div>
+                    <div @click="consoleHello()">不阻止冒泡和捕获</div>
+                </div>
+            </div>
+
+            <!-- capture -> 允许事件捕获-->
+            <div class="box1" @click.capture="consoleYes()">
+                <span>yes</span>
+                <div class="box2" @click.capture="consoleHello()">hello
+                    <div class="box3" @click.capture="consoleHi()">hi</div>
+                </div>
+            </div>
+            <!--默认注册的事件为冒泡事件-->
+            <div style="margin-top: 50px;" @click="consoleYes()">
+                yes
+                <div @click="consoleHello()">
+                    hello
+                    <div @click="consoleHi()">hi</div>
+                </div>
+            </div>
+
+            <!--self 只会触发event.target的事件-->
+            <!--当所在的dom结构所绑定的事件都为self时，才会生效-->
+            <div style="margin-top: 50px;" @click.self="consoleYes()">
+                yes
+                <div @click.self="consoleHello()">
+                    hello
+                </div>
+            </div>
+            <div style="padding-top: 20px;" @click.capture.self="consoleYes()">
+                yes
+                <div @click.capture.self="consoleHello()">
+                    hello
+                </div>
+            </div>
+
+            <!--once 事件只会触发一次-->
+            <div style="margin-top: 50px;" @click.once="consoleHello()">hello</div>
+        </div>
+
+        <!--按键修饰符-->
+        <div>
+            
+        </div>
+    </div>
+</body>
+</html>
+<script>
+    var vm = new Vue({
+        el: '#eventHandle',
+        data: {
+            greetName: 'greet'
+        },
+        methods: {
+            greet: function(event){
+                console.log(this.greetName);
+                console.log(event.target);
+            },
+            say: function (word, event) {
+                console.log(word, event.target);
+            },
+            eat: function (event, food) {
+                console.log(event.target, food);
+            },
+            inputKeypress: function (event) {
+                console.log(event.target);
+            },
+            consoleNo: function () {
+                console.log('no');
+            },
+            consoleYes: function () {
+                console.log('Yes');
+            },
+            consoleHello: function () {
+                console.log('hello');
+            },
+            consoleHi: function () {
+                console.log('hi');
+            }
+        }
+    });
+</script>
