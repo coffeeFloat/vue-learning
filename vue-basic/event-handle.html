@@ -4,7 +4,18 @@
     <meta charset="UTF-8">
     <title>event handle</title>
     <style>
-
+        .btn {
+            width: 100px;
+            height: 40px;
+            font-size: 16px;
+            color: #1c447a;
+            text-align: center;
+            padding: 12px 0;
+            cursor: pointer;
+            background-color: orange;
+            box-sizing:border-box;
+            margin-bottom: 10px;
+        }
     </style>
     <script src="../node_modules/vue/dist/vue.js"></script>
 </head>
@@ -72,7 +83,34 @@
 
         <!--按键修饰符-->
         <div>
-            
+            <input type="text" v-on:keyup.enter="getInputContent()" v-model="textInput">
+
+            <input type="text" v-on:keyup.page-down="getInputContent()"  v-model="textInput">
+
+            <input type="text" v-on:keyup.delete="getInputContent()"v-model="textInput">
+        </div>
+
+        <!--系统修饰键-->
+        <!--只有在按下系统修饰键的情况下，释放其他键才会触发事件-->
+        <div>
+            <!--ctrl + enter-->
+            <input text="text" v-on:keyup.ctrl.enter="printInputContent()" v-model="textContent"></input>
+            <!--alt + 鼠标左键-->
+            <div class="btn" @click.alt="mouseClick()">鼠标左击</div>
+        </div>
+
+        <!--exact 修饰符-->
+        <!--精确控制由系统修饰符组合出发事件-->
+        <div>
+            <div class="btn" style="background-color: yellow;" @click.alt="onClick()">单击按钮</div>
+            <div class="btn" style="background-color: grey;" @click.alt.exact="onClickAlt()">单击按钮</div>
+            <div class="btn" style="background-color: red;" @click.exact="onClickExact()">单击按钮</div>
+        </div>
+
+        <!--鼠标按钮修饰符-->
+        <div>
+            <div class="btn" @click.exact.middle="onClickMiddle()">鼠标中击</div>
+            <div class="btn" @click.exact.right="onClickRight()">鼠标右击</div>
         </div>
     </div>
 </body>
@@ -81,7 +119,9 @@
     var vm = new Vue({
         el: '#eventHandle',
         data: {
-            greetName: 'greet'
+            greetName: 'greet',
+            textInput: '',
+            textContent: ''
         },
         methods: {
             greet: function(event){
@@ -108,6 +148,31 @@
             },
             consoleHi: function () {
                 console.log('hi');
+            },
+            getInputContent: function () {
+                console.log(this.textInput);
+            },
+            printInputContent: function () {
+                console.log(this.textContent);
+            },
+            mouseClick: function () {
+                this.textContent += ' alt 加 鼠标左击'
+                console.log(this.textContent);
+            },
+            onClick: function () {
+                console.log('按下alt键的同时，按下shift或者ctrl键也会触发事件');
+            },
+            onClickAlt: function () {
+                console.log('只有按下Alt键的同时，单击按钮才会触发事件');
+            },
+            onClickExact: function () {
+                console.log('没有任何系统修饰按键的情况下，单击按键才会触发事件');
+            },
+            onClickMiddle: function () {
+                console.log('鼠标中击');
+            },
+            onClickRight: function () {
+                console.log('鼠标右击');
             }
         }
     });
