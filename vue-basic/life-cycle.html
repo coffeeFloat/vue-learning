@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>life cycle</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="lifeCycle">
+        <button @click="updateA">更新数据</button>
+        <span>{{a}}</span>
+    </div>
+</body>
+</html>
+<script>
+    var vm = new Vue({
+        el: '#lifeCycle',
+        data: {
+            a: '111'
+        },
+        methods: {
+            updateA: function () {
+                this.a = '222'
+            }
+        },
+        beforeCreate: function(){
+            console.log('beforeCreate');
+        },
+        created: function () {
+            console.log('created');
+        },
+        beforeMount: function () {
+            console.log('beforeMount');
+        },
+        mounted: function () {
+            console.log('mounted');
+        },
+        beforeUpdate: function () {
+            console.log('beforeUpdate');
+        },
+        updated: function () {
+            console.log('updated');
+        },
+        beforeDestroy: function () {
+            console.log('beforeDestroy');
+        },
+        destroyed: function () {
+            console.log('destroyed');
+        }
+    });
+</script>

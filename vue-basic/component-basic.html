@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>component basic</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <style>
+        .slot-style {
+            font-size: 16px;
+            font-weight: flod;
+            font-style: italic;
+        }
+        .tab-button {
+            padding: 6px 10px;
+            border-top-left-radius: 3px;
+            border-top-right-radius: 3px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            background: #f0f0f0;
+            margin-bottom: -1px;
+            margin-right: -1px;
+        }
+        .tab-button:hover {
+            background: #e0e0e0;
+        }
+        .tab-button.active {
+            background: #e0e0e0;
+            z-index: 1;
+        }
+        .tab {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="componentLearn">
+        <button-counter></button-counter>
+
+        <user-name username="Hector"></user-name>
+
+        <!--组件prop 使用时采用‘-’连接，而非通风命名-->
+        <user-info-complex v-for="userInfo in userList" v-bind:key="userInfo.id" v-bind:user-info="userInfo"></user-info-complex>
+
+        <!--组件内部传递事件规则： 组件内部定义事件名称并传递参数，组件外部使用该名称并定义事件，另接收参数-->
+        <div :style="{fontSize: fontSizeAdd + 'em'}">
+            <title-show v-on:enlarge-text="fontSizeAdd += 0.1" title="hello world"></title-show>
+        </div>
+        <div :style="{fontSize: contentFontSize + 'em'}">
+            <!--方法不带参数-->
+            <content-show content="啦啦啦啦啦啦啦啦啦啦啦" v-on:enlarge-text="enlargeFontSize"></content-show>
+        </div>
+
+        <!--组件上使用v-model，应用原理-->
+        <div>
+            <custom-input v-bind:value="searchValue" v-on:input="searchValue = $event"></custom-input>
+            <!--<custom-input v-model="searchValue"></custom-input>-->
+            <div>{{searchValue}}</div>
+        </div>
+
+        <!--组件上使用插槽 传递内容-->
+        <slot-content>哈哈哈哈哈哈哈哈哈哈哈哈哈哈</slot-content>
+
+        <!--component元素 is特性-->
+        <!--is 指向组件名称-->
+        <button v-for="tab in tabs"
+                v-bind:key="tab"
+                v-bind:class="['tab-button', { active: currentTab === tab }]"
+                @click="currentTab = tab">{{tab}}</button>
+        <component v-bind:is="currentTabComponent"></component>
+
+        <!--is 指向组件的选项对象-->
+        <button v-for="tab in tabArr"
+                v-bind:key="tab.name"
+                v-bind:class="['tab-button', { active: cTab.name === tab.name }]"
+                @click="cTab = tab">{{tab.name}}</button>
+        <component v-bind:is="cTab.component"></component>
+
+
+        <!-- 使用is特性避免解析dom时的错误 -->
+        <ul>
+            <li is="project-info" v-for="project in projects" v-bind:key="project.ID" v-bind:project-info="project"></li>
+        </ul>
+    </div>
+</body>
+</html>
+<script>
+    Vue.component('button-counter', {
+        // data 必须是一个函数
+        data: function () {
+            return {
+                count: 0
+            }
+        },
+        template: '<button @click="count++">clicked me {{count}} times</button>'
+    });
+
+    // prop 传值
+    Vue.component('user-name', {
+        props: ['username'],
+        template: '<div>{{username}}</div>'
+    });
+    Vue.component('user-info-complex', {
+        // props定义 不能是采用驼峰命名，使用时必须采用驼峰命名
+        props: ['user-info'],
+        // 模板必须是在单个根元素内
+        template: '<div>\
+                   <div>{{userInfo.name}}</div>\
+                   <div>{{userInfo.job}}</div>\
+                   </div>'
+    });
+    // 监听子组件事件
+    Vue.component('title-show', {
+        props: ['title'],
+        template: `
+                    <div>
+                        <div>{{title}}</div>
+                        <button v-on:click="$emit('enlarge-text')">enlarge text</button>
+                    </div>
+                `
+    });
+    Vue.component('content-show', {
+        props: ['content'],
+        template: `
+            <div>
+                <div>{{content}}</div>
+                <button @click="$emit('enlarge-text', 0.2)">增大字号</button>
+            </div>
+        `
+    })
+
+    // 组件使用v-model
+    Vue.component('custom-input', {
+        props: ['value'],
+        template: `
+           <input v-bind:value="value" v-on:input="$emit('input', $event.target.value)">
+        `
+    });
+
+    // 组件上使用插槽
+    Vue.component('slot-content', {
+        template: `
+            <div class="slot-style">
+                <slot></slot>
+            </div>
+        `
+    });
+
+    // component元素is特性
+    Vue.component('tab-home', {
+        template: '<div>home component</div>'
+    });
+    Vue.component('tab-posts', {
+        template: '<div>posts component</div>'
+    });
+    Vue.component('tab-archive', {
+        template: '<div>archive component</div>'
+    });
+    var tabArr = [
+        {
+            name: 'home1',
+            component: {
+                template: '<div>home component</div>'
+            }
+        },
+        {
+            name: 'posts1',
+            component: {
+                template: '<div>posts component</div>'
+            }
+        },
+        {
+            name: 'archive1',
+            component: {
+                template: '<div>archive component</div>'
+            }
+        },
+    ];
+
+    Vue.component('project-info', {
+        props: ['project-info'],
+        template: '<div><span>{{projectInfo.ID}}</span>- <span>{{projectInfo.money}}万元</span></div>'
+    });
+
+    new Vue({
+        el: '#componentLearn',
+        data: {
+            userList: [
+                {name: 'John', job: 'plainter',id: 1},
+                {name: 'Smith', job: 'engineer', id: 2}
+            ],
+            fontSizeAdd: 1,
+            content: '啦啦啦啦啦啦啦',
+            contentFontSize: 1.2,
+            searchValue: '',
+            tabs: ['home', 'posts', 'archive'],
+            currentTab: 'home',
+            tabArr: tabArr,
+            cTab: tabArr[0],
+            projects: [
+                {
+                    ID: 1,
+                    money: 111
+                },
+                {
+                    ID: 2,
+                    money: 222
+                },
+                {
+                    ID: 3,
+                    money: 333
+                },
+
+            ]
+        },
+        methods: {
+            enlargeFontSize: function (num) {
+                this.contentFontSize += num;
+            },
+            searchValueInput: function(value){
+                this.searchValue = value;
+            }
+        },
+        computed: {
+            currentTabComponent: function () {
+                 return 'tab-' + this.currentTab;
+            }
+        }
+    });
+
+
+
+</script>

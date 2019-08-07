@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>vue-basic-review</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="basicReview">
+        <!--模板语法-->
+        <!-- 数据绑定到DOM常用格式与规范 -->
+        <!--插入文本-->
+        <div>{{a}}</div>
+        <!--插入HTMl-->
+        <div v-html="b"></div>
+        <!--在HTML特性上插入特性：v-bind-->
+        <div v-bind:title="title">插入特性</div>
+        <!--模板插入单个javascript表达式-->
+        <div>{{c + d}}</div>
+        <!--指令缩写-->
+        <div>
+            <a v-bind:href="baiduHref" target="_blank">进入baidu</a>
+            <a :href="baiduHref" target="_blank">进入百度</a>
+        </div>
+        <div>
+            <div v-on:click="enterBaidu">进入baidu</div>
+            <div @click="enterBaidu">进入baidu</div>
+        </div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+        <!--vue实例的选项对象中computed与watch-->
+        <!--computed  避免模板表达式过于繁复，导致模板数据过大难以维护-->
+        <!--当计算属性指向一个方法时，默认为计算属性的getter方法，该方法用于返回计算属性所求的值-->
+        <!--计算属性还有setter方法，当计算属性的值被重新赋值时会调用-->
+        <!--computed不同于methods,计算属性会缓存其值,直到它以来的变量发生变化;而方法是当触发再次渲染时,会重新执行函数-->
+        <div>
+            <div>{{message}}</div>
+            <div>{{reverseMessage}}</div>
+        </div>
+        <div>
+            <div>{{changeName}}</div>
+            <div @click="changeName = 'A O'">editName</div>
+        </div>
+        <!--当需要执行异步操作或者开销较大的操作来相应数据的变化时,watch 较为合理-->
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+
+        <!--class与style绑定表达式计算结果可以是字符串/对象/数组-->
+        <!--class 绑定对象-->
+        <div :class="{active: classBinding.isActive, bolder: classBinding.isBold}">class 绑定对象</div>
+        <div :class="classBinding.obj">class直接绑定数据对象</div>
+        <div :class="classComputedObj">class绑定计算属性返回对象</div>
+        <!--class 绑定数组-->
+        <div :class="[activeClass, errorClass]">数组各项为表示class名称的数据</div>
+        <div :class="[classArray.isActive?activeClass: errorClass]">数组内使用三元表达式</div>
+        <div :class="[{active: classArray.isActive}, {error: classArray.isError}]">数组内使用对象</div>
+        <!--另外 当class绑定在component引用上时 类名将作用在template html上 seriously-->
+        <!--style绑定对象-->
+        <div :style="{'font-size': styleBinding.fontSize, lineHeight: styleBinding.lineHeight}">style 绑定对象</div>
+        <div :style="styleBinding.obj">style直接绑定数据对象</div>
+        <div :style="styleComputedObj">style绑定计算属性返回对象</div>
+        <!--style绑定数组-->
+        <div :style="[styleBinding.obj,styleBinding.obj2]">style绑定计算属性</div>
+        <!--style绑定会自动提供兼容性写法-->
+        <div :style="{transform: styleBinding.transform}" style="display: inline-block">涉及兼容性的css样式优化</div>
+        <!--style绑定支持一个属性提供多个值-->
+        <!--显示格式:后来居上 只会显示最后1个被浏览器支持的值-->
+        <div :style="{display: ['-webkit-box', 'flex']}"></div>
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <!--条件渲染-->
+        <!-- v-if v-else-if v-else -->
+        <div>
+            <div v-if="contentType == 1">内容1</div>
+            <div v-else-if="contentType == 2">内容2</div>
+            <div v-else="contentType == 3">内容3</div>
+            <button @click="contentType = 1">切换为内容1</button>
+            <button @click="contentType = 2">切换为内容2</button>
+            <button @click="contentType = 3">切换为内容3</button>
+        </div>
+        <!--在v-if v-else 中出现相同的元素时，当两项不断切换时，该元素会复用，给元素添加唯一的key会终止复用-->
+        <div>
+            <div v-if="loginType == 1">
+                <input type="text" placeholder="使用手机号登陆" key="phone-login">
+            </div>
+            <div v-else="loginType == 2">
+                <input type="text" placeholder="使用邮箱登录" key="email-login">
+            </div>
+        </div>
+        <button @click="loginType == 1?(loginType = 2): (loginType = 1)">切换登录方式</button>
+        <!--v-show 只是切换display样式-->
+        <!--v-if 不推荐与 v-for一起使用于同一元素-->
+        <br/>
+        <br/>
+        <br/>
+        <br/>
+        <!--v-for列表渲染-->
+        <!--数组渲染支持两个参数-->
+        <div>
+            <div v-for="(item, index) in rooms" :key="item.num">
+                {{item.position}} - {{item.type}} - {{index}}
+            </div>
+        </div>
+        <!--数组列表渲染，可以使用of 代替 in -->
+        <div v-for="(item, index) of rooms" :key="item.num">
+            {{item.position}} - {{item.type}} - {{index}}
+        </div>
+        <!--v-for 遍历对象，支持3个参数-->
+        <!--遍历对象时，不能保证在不同浏览器中的渲染顺序-->
+        <div v-for="(value, name, index) in guestInfo">
+            {{value}} - {{name}} - {{index + 1}}
+        </div>
+        <!--当数组更新时，vue默认使用就地更新策略，更新每个元素。而不是移动dom，更换顺序-->
+        <!--当使用以下数组方法时，可更改数组数据-->
+        <div v-for="item in numArr" :key="item">{{item}}</div>
+        <button @click="numArr.push(10)">push</button>
+        <button @click="numArr.unshift(0)">unshift</button>
+        <button @click="numArr.pop()">pop</button>
+        <button @click="numArr.shift()">shift</button>
+        <button @click="numArr.reverse()">reverse</button>
+        <button @click="numArr.sort()">sort</button>
+
+        <!--当使用以下数组方法时，不会改变原数组，但是会返回一个新数组  可以使用新数组代替原数组实现数组更新-->
+        <div>
+            <button @click="concatArr()">concat</button>
+            <button @click="sliceArr()">slice</button>
+            <button @click="filterArr()">filter</button>
+        </div>
+
+        <!--修改数组项 修改数组长度-->
+        <div>
+            <button @click="editItem">修改数组某一项</button>
+            <button @click="editItem2">修改数组某一项方法2</button>
+            <button @click="editArrLength">修改数组长度</button>
+        </div>
+
+        <!--对象添加一个属性-->
+        <div>
+            <button @click="objAddOneProp">对象添加一个属性</button>
+            <button @click="objAddProps">对象添加多个属性</button>
+        </div>
+        <!--遍历数字-->
+        <div v-for="num in 10">{{num}}</div>
+    </div>
+</body>
+</html>
+<script>
+    var vm = new Vue({
+        el: '#basicReview',
+        data: {
+            a: '文本',
+            b: '<span style="color: red;">插入html</span>',
+            title: '插入特性',
+            c: 3,
+            d: 5,
+            baiduHref: 'baidu.com',
+            message: 'wodeshijie',
+            firstName: 'Jhon',
+            lastName: 'smitth',
+            classBinding: {
+                isActive: true,
+                isBold: true,
+                obj: {
+                    'is-first': true,
+                    'is-show': true
+                }
+            },
+            isShow: true,
+            lawyer: {
+                level: 'high'
+            },
+            important: true,
+            activeClass: 'active',
+            errorClass: 'error',
+            classArray: {
+                isActive: true,
+                isError: true
+            },
+            styleBinding: {
+                fontSize: '18px',
+                lineHeight: '30px',
+                obj: {
+                    color: 'blue',
+                    fontStyle: 'italic'
+                },
+                obj2: {
+                    'font-size': '20px',
+                    lineHeight: 2
+                },
+                isTitle: true,
+                signal: true,
+                transform: 'scale(1.5)'
+            },
+            contentType: 1,
+            loginType: 1,
+            rooms: [
+                {num: 1, type: 'big', position: 'left'},
+                {num: 2, type: 'middle', position: 'center'},
+                {num: 2, type: 'small', position: 'right'},
+                ],
+            guestInfo: {
+                name: 'Jackson',
+                position: 'manager',
+                money: '12121'
+            },
+            numArr: [1, 2, 5, 3, 4, 6]
+        },
+        methods: {
+            enterBaidu: function(){
+                window.location.href = 'http://www.baidu.com';
+            },
+            concatArr: function () {
+                this.numArr = this.numArr.concat([11,12,13]);
+            },
+            sliceArr: function(){
+                this.numArr = this.numArr.slice(0,3);
+            },
+            filterArr: function(){
+                this.numArr = this.numArr.filter(function(num){
+                    return num % 2 === 0
+                })
+            },
+            editItem: function(){
+                vm.$set(this.numArr, 0, 100);
+//                Vue.set(this.numArr, 0, 200);
+            },
+            editItem2: function () {
+                this.numArr.splice(0, 1, 300);
+            },
+            editArrLength: function(){
+                this.numArr.splice(3);
+            },
+            objAddOneProp: function () {
+                vm.$set(vm.guestInfo, 'age', 18);
+            },
+            objAddProps: function () {
+                vm.guestInfo = Object.assign({},vm.guestInfo, {
+                    color: 'black',
+                    country: 'south-africa'
+                })
+            }
+        },
+        computed: {
+            reverseMessage: function () {
+                return this.message.split('').reverse().join('');
+            },
+            changeName: {
+                get: function(){
+                    console.log('调用get');
+                    return this.firstName + this.lastName;
+                },
+                set: function(newVal){
+                    console.log('调用set');
+                    var names = newVal.split(" ");
+                    this.firstName = names[0];
+                    this.lastName = names[names.length - 1];
+                }
+            },
+            classComputedObj: function () {
+                return {
+                    'balance-blue': this.isShow && this.lawyer.level == 'high',
+                    'important-one': this.important
+                }
+            },
+            styleComputedObj: function(){
+                return {
+                    'font-size': this.styleBinding.isTitle?'24px': '16px',
+                    'color': this.styleBinding.signal?'red': '#000',
+                }
+            }
+        }
+    });
+</script>

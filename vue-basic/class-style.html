@@ -7,12 +7,10 @@
 </head>
 <body>
     <div id="example">
-        <div class="one" v-bind:class="{two: is2,three: is3}"></div>
-
         <!--数据对象-->
+        <div class="one" v-bind:class="{two: is2,three: is3}"></div>
         <div class="one" v-bind:class="classObj"></div>
-
-        <!--计算方式对象class-->
+        <!--计算方式对象class 返回对象-->
         <div class="one" v-bind:class="classComputed"></div>
 
         <!--数组class-->
@@ -21,6 +19,7 @@
 
         <!--对象style-->
         <div v-bind:style="{color: colorSet, fontSize: fontSize + 'px', 'background-color': bgc}">hhh</div>
+        <!--计算方式返回style对象-->
         <div v-bind:style="styleObj">hello!!!</div>
 
         <!--数组style-->
