@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>组件 keep alive</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <style>
+        .button-box {
+
+        }
+        .clearfix:after {
+            content: '';
+            height: 0;
+            display: block;
+            clear: both;
+        }
+        .component-tab {
+            padding: 8px 12px;
+            background-color: #1C447A;
+            border-radius: 3px;
+            line-height: 16px;
+            font-size: 16px;
+            color: #fff;
+            border: 1px solid #aaa;
+            cursor: pointer;
+            float: left;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="keepAlive">
+        <div class="button-box clearfix">
+            <button class="component-tab" @click="switchTab('post')">post</button>
+            <button class="component-tab" @click="switchTab('archive')">archive</button>
+        </div>
+        <!--keepAlive标签使切换的组件缓存起来，可以节省性能-->
+        <keep-alive>
+            <component :is="currentComponent"></component>
+        </keep-alive>
+    </div>
+</body>
+</html>
+<script>
+    Vue.component('post-tab', {
+        template: `
+            <div>
+                我是post
+            </div>
+        `
+    });
+    Vue.component('archive-tab', {
+        template: `
+            <div>
+                我是archive
+            </div>
+        `
+    });
+    var vm = new Vue({
+        el: '#keepAlive',
+        data: {
+            currentComponent: 'post-tab'
+        },
+        methods: {
+            switchTab: function(type){
+                this.currentComponent = type + '-tab';
+            }
+        }
+    });
+</script>

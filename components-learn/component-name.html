@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>component-name</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <!--组件命名可以使用短横线连接方式，也可以使用首字母大写方式，但引用时建议使用前者命名方式(通用)-->
+    <div id="vueInstance">
+        <component-a></component-a>
+        <component-b></component-b>
+        <component-c></component-c>
+    </div>
+</body>
+</html>
+<script>
+    Vue.component('component-a', {
+        template: '<div>component-a</div>'
+    });
+    Vue.component('ComponentB', {
+        template: '<div>ComponentB</div>'
+    });
+    // 全局注册的组件可以相互引用
+    Vue.component('component-c', {
+        template: '<div><div>component-c</div><ComponentB></ComponentB></div>'
+    });
+    var vm = new Vue({
+        el: '#vueInstance'
+    });
+</script>

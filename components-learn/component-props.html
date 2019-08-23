@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>组件特性</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="lawyerInfo">
+        <!--组件在Dom中引用 使用短横线连接-->
+        <lawyer-info v-bind:lawyer-info="lawyerInfo"></lawyer-info>
+
+        <user-info :age="userInfo.age"
+                   :sex="userInfo.sex"
+                   :projects="userInfo.projects"
+                   :contact="userInfo.contact"
+                   :is-vip="userInfo.isVip"
+                   :person="userInfo.person" ></user-info>
+        <br/>
+        <br/>
+        <br/>
+        <!--组件传值-->
+        <!--字符串-->
+        <user-info sex="woman"></user-info>
+        <user-info :sex="userInfo.sex"></user-info>
+        <!--数字-->
+        <user-info :age="19"></user-info>
+        <user-info :age="userInfo.age"></user-info>
+        <!--数组-->
+        <user-info :projects="[{id: 4, client: '韩'}, {id: 5, client: '魏'}]"></user-info>
+        <user-info :projects="userInfo.projects"></user-info>
+        <!--对象-->
+        <user-info :contact="{name: '钟无艳', phone: 18882082088}"></user-info>
+        <user-info :contact="userInfo.contact"></user-info>
+        <!--布尔值-->
+        <!--当不写入该属性时，值为false; 当写入属性而无值时，值为true-->
+        <user-info is-vip></user-info>
+        <user-info :is-vip="false"></user-info>
+        <user-info :is-vip="userInfo.isVip"></user-info>
+        <br/>
+        <br/>
+        <br/>
+        <!--单项数据流 子组件试图改变特性数据的两种常用处理方式-->
+        <country-info :province-count="country.provinceNum" country-name="Huge China"></country-info>
+        <br/>
+        <br/>
+        <br/>
+        <!--非props特性 默认会添加至模板根元素。如有重复的，会覆盖根元素上的属性, class/style 除外，他们会叠加到根元素-->
+        <user-info date-type="dfdf" class="user-info"></user-info>
+        <!--将inheritAttrs="false" $attrs 组合使用，可以将非props特性添加到模板中的指定元素上-->
+        <base-input v-model="username" placeholder="请输入用户名称" ></base-input>
+    </div>
+</body>
+</html>
+<script>
+    Vue.component('lawyer-info',{
+        // 组件定义使用驼峰命名法
+        props: ['lawyerInfo'],
+        template: '<div>{{lawyerInfo.name}}{{lawyerInfo.position}}</div>'
+    });
+
+    // 组件中props 为每个prop指定值类型
+    function Person(firstName, lastName){
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+    Vue.component('user-info', {
+        props: {
+            age: Number,
+            sex: String,
+            projects: Array,
+            contact: Object,
+            callback: Function,
+            isVip: Boolean,
+            person: Person
+        },
+        template: `<div class="hhhh">
+                     <div>{{age}}</div>
+                     <div>{{sex}}</div>
+                     <div v-for="project in projects" :key="project.id">{{project.client}}</div>
+                     <div v-for="(value, name) in contact">{{name}}: {{value}}</div>
+                     <div >{{isVip}}</div>
+                     <div v-for="(value, name) in person">{{name}}: {{value}}</div>
+                   </div>`
+    });
+    Vue.component('country-info', {
+        props: ['provinceCount', 'countryName'],
+        data: function () {
+            return {
+                count: this.provinceCount
+            }
+        },
+        computed: {
+            countryN: function () {
+                return this.countryName.toLowerCase()
+            }
+        },
+        template: '<div>{{count}}{{countryN}}</div>'
+    });
+    // props 验证
+    Vue.component('self-validater', {
+        props: {
+            a: Number,
+            b: [Number, String],
+            c: {
+                type: Number,
+                default: 190,
+                required: true
+            },
+            d: {
+                type: Object,
+                // 对象或数组默认值必须从函数中获取
+                default: function () {
+                    return {name: 'hi'}
+                }
+            },
+            e: {
+                type: String,
+                // 自定义验证方式
+                validator: function(val){
+                    return val.indexOf('hi') !== -1
+                }
+            }
+        },
+    });
+    Vue.component('base-input', {
+        inheritAttrs: false,
+        props: ['label', 'value'],
+        template: `
+            <label>
+                {{label}}
+                <input type="text" v-bind="$attrs" :value="value" v-on:input="$emit('input', $event.target.value)">
+            </label>
+        `
+    });
+    var vm = new Vue({
+        el: '#lawyerInfo',
+        data: {
+            lawyerInfo: {
+                name: 'lee',
+                position: 'manager',
+
+
+            },
+            userInfo: {
+                age: 18,
+                sex: 'woman',
+                projects: [{id: 1, client: '陕西'}, {ids: 2, client: '山西'}, {id: 3, client: '广西'}],
+                contact: {name: '刘长卿', phone: 18000998877},
+                isVip: true,
+                person: new Person('赵', '海')
+            },
+            country: {
+                provinceNum: 28
+            },
+            username: ''
+        }
+    });
+</script>

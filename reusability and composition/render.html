@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>render</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="myApp">
+        <demo1></demo1>
+        <demo2></demo2>
+        <demo3></demo3>
+        <demo4 demo4-id="demo4" demo4-content="jjjjik"></demo4>
+        <demo5></demo5>
+        <demo6>
+            <h1>headerheaderheader</h1>
+            <template v-slot:container>
+                <div>containercontainercontainer</div>
+            </template>
+            <template v-slot:footer>
+                footerfooterfooterfooter
+            </template>
+        </demo6>
+        <demo7>
+            <template v-slot:default="props">{{props.text}}</template>
+        </demo7>
+        <demo8></demo8>
+        <demo9></demo9>
+        <demo10 v-model="demoModel"></demo10>
+        <div>{{demoModel}}</div>
+    </div>
+</body>
+</html>
+<script>
+    // createElement方法传参
+    Vue.component('demo1',{
+        render: function (createElement) {
+            return createElement('div', 'demo1')
+        }
+    });
+    Vue.component('demo2', {
+        render: function (createElement) {
+            return createElement({
+                template: '<div>demo2</div>'
+            })
+        }
+    });
+
+    // createElement方法第二个数据对象参数中 class与style
+    Vue.component('demo3', {
+        render: function(createElement){
+            return createElement('div', {
+                class: {
+                    foo: true,
+                    bar: true
+                },
+                style: {
+                    color: 'orange',
+                    fontSize: '30px'
+                }
+            }, [createElement('span', 'demo3')]);
+        }
+    });
+
+    // createElement方法第二个数据对象参数中 attrs 与 domProps
+    Vue.component('demo4', {
+        render: function(createElement){
+            return createElement('div', {
+                attrs: {
+                    id: this.demo4Id
+                },
+                domProps: {
+                    innerHTML: this.demo4Content
+                }
+            })
+        },
+        props: ['demo4-id', 'demo4-content']
+    });
+
+    // createElement方法第二个数据对象参数中 on
+    Vue.component('demo5', {
+        render: function(createElement){
+            return createElement('div', [
+                createElement('input', {
+                    on: {
+                        keyup: this.keyupHandle
+                    }
+                }),
+                createElement('button', {
+                    on: {
+                        click: this.clickHandle,
+                    }
+                }, '按钮')
+                ]
+            )
+        },
+        methods: {
+            keyupHandle: function(){
+                console.log('keyupHandle');
+            },
+            clickHandle: function () {
+                console.log('clickHandle');
+            }
+        }
+    });
+
+    // createElement方法第二个数据对象参数中 slot
+    Vue.component('demo6', {
+        render: function (createElement) {
+            var header = this.$slots.default;
+            var container = this.$slots.container;
+            var footer = this.$slots.footer;
+            return createElement('div', [
+                createElement('header', header),
+                createElement('main', container),
+                createElement('footer', footer)
+            ])
+        }
+    });
+
+    // createElement方法第二个数据对象参数中 scopedSlots
+    // 向自身传递子作用域插槽
+    Vue.component('demo7', {
+        render: function(createElement){
+            return createElement('div', [
+                this.$scopedSlots.default({text: this.msg})
+            ])
+        },
+        data: function () {
+            return {
+                msg: '哈哈哈哈'
+            }
+        }
+    });
+    // 向子组件传递作用域插槽
+    Vue.component('demo8', {
+        data: function () {
+            return {
+                message: '向子组件传递作用域插槽111'
+            }
+        },
+        render: function(createElement){
+            var self = this;
+            return createElement('div', [
+                createElement('demo8-child', {
+                    props: {
+                        message: self.message
+                    },
+                    scopedSlots: {
+                        default: function(props){
+                            return [
+                                createElement('div', props.text)
+                            ]
+                        }
+                    }
+                })
+            ])
+        }
+    });
+    Vue.component('demo8-child', {
+        props: ['message'],
+        render: function(createElement){
+            var self = this;
+            return createElement('span', {
+            },  this.$scopedSlots.default({text: self.message}))
+        }
+    })
+
+    // vNode 必须唯一
+    // 搞重复有诀窍
+    Vue.component('demo9', {
+        render: function(createElement){
+            return createElement('div',
+                Array.apply(null, {length: 3}).map(function(){
+                    return createElement('span', 'hi ')
+                })
+            )
+        }
+    });
+
+    // v-model
+    Vue.component('demo10', {
+        prpps: ['value'],
+        render: function(createElement){
+            var self = this;
+            return  createElement('input', {
+                domProps: {
+                    value: self.value
+                },
+                on: {
+                    input: function(event){
+                        self.$emit('input', event.target.value)
+                    }
+                }
+            })
+        }
+    });
+    new Vue({
+        el: '#myApp',
+        data: {
+            text: 'hhhh',
+            demoModel: ''
+        }
+    });
+</script>

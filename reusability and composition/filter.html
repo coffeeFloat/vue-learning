@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="myApp">
+        <div>{{sex | sexFilter}}</div>
+        <user-info :user="userInfo"></user-info>
+    </div>
+</body>
+</html>
+<script>
+    Vue.filter('sexFilter', function(val){
+        var result = '';
+        switch(val + '') {
+            case '1':
+                result = '男';
+                break;
+            case '2':
+                result = '女';
+                break;
+            default:
+                break;
+        }
+        return result;
+    });
+    Vue.component('user-info', {
+        props: ['user'],
+        template: `
+            <div>
+                <div>{{user.name | upperWord | trimWord(user.firstName, user.lastName)}}</div>
+            </div>
+        `,
+        filters: {
+            'upperWord': function(val){
+                if(!val) {
+                    return '';
+                }else {
+                    return val.toUpperCase();
+                }
+            },
+            'trimWord': function(val, firstName, lastName){
+                console.log(firstName, lastName);
+                if(!val) {
+                    return '';
+                }
+                var nameArr = val.split(' ');
+                if(nameArr.length != 2) {
+                    return nameArr[0];
+                }else {
+                    return nameArr[0] + ' ' + nameArr[nameArr.length -1];
+                }
+            }
+        }
+    });
+    var vm = new Vue({
+        el: '#myApp',
+        data: {
+            sex: 2,
+            userInfo: {
+                name: 'john swifft',
+                firstName: 'john',
+                lastName: 'swifft'
+            }
+        }
+    });
+</script>

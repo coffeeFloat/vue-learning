@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>局部注册1</title>
+    <script src="../../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="componentRegistration">
+        <component-a></component-a>
+        <component-b></component-b>
+    </div>
+</body>
+</html>
+<script>
+    var ComponentA = {
+        template: '<div>ComponentA</div>'
+    };
+    // 局部注册组件之间引用
+    var ComponentB = {
+        components: {
+            'component-a': ComponentA
+        },
+        template: '<div>componentB <component-a></component-a></div>'
+    };
+    var vm = new Vue({
+        el: '#componentRegistration',
+        // 局部组件注册
+        components: {
+            'component-a': ComponentA,
+            'component-b': ComponentB
+        }
+
+    });
+</script>

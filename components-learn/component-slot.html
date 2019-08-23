@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>组件插槽</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <style>
+        .button-base {
+            padding: 8px 12px;
+            background-color: #1C447A;
+            border-radius: 3px;
+            line-height: 16px;
+            font-size: 16px;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div id="componentSlot">
+        <!--插槽内容，可以是：文本、html、组件-->
+        <button-base url="www.baidu.com">
+            我的按钮
+        </button-base>
+        <button-base url="www.baidu.com">
+            <span style="color: orange;">确定</span>
+        </button-base>
+        <button-base url="www.baidu.com">
+            <italic-text>退出</italic-text>
+        </button-base>
+        <br>
+        <br>
+        <br>
+        <!--插槽作用域 插槽内容无法访问组件内数据，只能访问父作用域数据-->
+        <!--<button-base url="www.baidu.com">
+            <span>{{url}}</span>
+        </button-base>-->
+        <br>
+        <br>
+        <br>
+        <!--插槽后备内容 当插槽无内容时显示，有内容时被覆盖-->
+        <button-base></button-base>
+        <br>
+        <br>
+        <br>
+        <!--具名插槽 当有多个插槽时，使用具名插槽-->
+        <!--没用名称的插槽默认名称是‘default’-->
+        <layout-base>
+            <template v-slot:header>
+                <h4>这是我的标题</h4>
+            </template>
+            <!--没有表明是哪个插槽内容的，默认是default插槽的内容-->
+            <div>
+                我的内容
+            </div>
+            <template v-slot:footer>
+                <p>这是我的页脚</p>
+            </template>
+        </layout-base>
+        <br>
+        <br>
+        <br>
+        <!--作用域插槽：使用组件插槽内容可以访问组件内数据-->
+        <user-info :user="userInfo"></user-info>
+        <br>
+        <user-info :user="userInfo">
+            <!--再次：使用v-slot指令提供‘包含所有插槽prop的对象名称’-->
+            <template v-slot:default="slotProps">
+                {{slotProps.user.lastName}}
+            </template>
+        </user-info>
+        <br>
+        <!--当只有默认插槽时，组件可以被当作插槽模板使用-->
+        <user-info :user="userInfo" v-slot:default="slotProps">
+            {{slotProps.user.lastName}}
+        </user-info>
+        <br>
+        <!--进一步简化 只适用于有且仅有默认插槽-->
+        <user-info :user="userInfo" v-slot="slotProps">
+            {{slotProps.user.lastName}}
+        </user-info>
+        <br>
+        <!--当有多个插槽时-->
+        <client-info :client-info="clientInfo" :contact-info="contactInfo">
+            <template v-slot:default="defaultSlotProps">
+                <span>{{defaultSlotProps.client.name}}</span>
+                <span>{{defaultSlotProps.client.address}}</span>
+            </template>
+            <template v-slot:contact="contactSlotProps">
+                <span>{{contactSlotProps.contact.name}}</span>
+                <span>{{contactSlotProps.contact.phone}}</span>
+            </template>
+        </client-info>
+        <br>
+        <!--解构插槽prop-->
+        <user-info :user="userInfo" v-slot="{user}">
+            {{user.lastName}}
+        </user-info>
+        <!--ES2015解构-->
+        <user-info :user="userInfo" v-slot="{user: userInfo}">
+            {{userInfo.lastName}}
+        </user-info>
+        <!--可以传入多个参数-->
+        <user-info :user="userInfo" :person="person" v-slot="{user: userInfo, person}">
+            {{userInfo.lastName}}
+            <span>{{person.nationality}}</span>
+        </user-info>
+        <br>
+        <br>
+        <br>
+        <!--动态插槽名-->
+        <content-type :lawyers="lawyers">
+            <template v-slot:[dynamicslotname]="slotProps">
+                {{slotProps.lawyer.name}}
+            </template>
+
+        </content-type>
+        <button @click="switchSlotName">切换插槽名</button>
+        <br>
+        <br>
+        <br>
+        <!--具名插槽的缩写 ‘#’不能单独使用-->
+        <layout-base>
+            <template #header>
+                <h4>这是我的标题</h4>
+            </template>
+            <!--没有表明是哪个插槽内容的，默认是default插槽的内容-->
+            <div>
+                我的内容
+            </div>
+            <template #footer>
+                <p>这是我的页脚</p>
+            </template>
+        </layout-base>
+        <br>
+        <br>
+        <br>
+        <!--插槽的应用之一： 在封装逻辑的同时，保持一定的灵活性-->
+        <unfinished-stuffs :todos="todos" v-slot="slotProps">
+            <span v-show="!slotProps.todo.isComplete">{{slotProps.todo.stuff}}</span>
+        </unfinished-stuffs>
+    </div>
+</body>
+</html>
+<script>
+    Vue.component('button-base', {
+        props: ['url'],
+        methods: {
+            enterInto: function () {
+                window.location.href = this.url;
+            }
+        },
+        template: '<button class="button-base" @click="enterInto"><slot>button</slot></button>'
+    });
+    Vue.component('italic-text', {
+        template: '<span style="font-style: italic;"><slot>斜体文本</slot></span>'
+    });
+    Vue.component('layout-base', {
+        template: `
+            <div class="container">
+                <header>
+                    <slot name="header"></slot>
+                </header>
+                <main>
+                    <slot></slot>
+                </main>
+                <footer>
+                    <slot name="footer"></slot>
+                </footer>
+            </div>
+        `
+    });
+    Vue.component('user-info', {
+        props: ['user', 'person'],
+        // 插槽作用域：首先slot元素绑定‘插槽prop’,将user作为slot元素上的一个特性进行绑定
+        template: `
+            <div>
+                <slot :user="user" :person="person">{{user.firstName}}</slot>
+            </div>
+        `
+    });
+    Vue.component('client-info', {
+        props: ['clientInfo','contactInfo'],
+        template: `
+            <div>
+                <slot :client="clientInfo"></slot>
+                <slot name="contact" :contact="contactInfo"></slot>
+            </div>
+        `
+    });
+    Vue.component('content-type', {
+        props: ['lawyers'],
+        template: `
+            <div>
+                <slot :lawyer="lawyers[0]"></slot>
+                <slot name="content2" :lawyer="lawyers[1]"></slot>
+                <slot name="content3" :lawyer="lawyers[2]"></slot>
+            </div>
+        `
+    });
+    Vue.component('unfinished-stuffs', {
+        props: ['todos'],
+        template: `
+            <div >
+                <div v-for="todo in todos" :key="todo.stuff">
+                    <slot :todo="todo"></slot>
+                </div>
+            </div>
+        `
+    })
+    var vm = new Vue({
+        el: '#componentSlot',
+        data: {
+            userInfo: {
+                firstName: 'Yang',
+                lastName: 'fan',
+            },
+            person: {
+                nationality: 'China'
+            },
+            clientInfo: {
+                name: 'John',
+                address: '积水潭'
+            },
+            contactInfo: {
+                name: 'Jack',
+                phone: 18800001111
+            },
+            dynamicslotname: 'content2',
+            lawyers: [{name: 'aaa'}, {name: 'bbb'}, {name: 'ccc'}],
+            todos: [
+                {stuff: 'eat',isComplete: false},
+                {stuff: 'sleep', isComplete: false},
+                {stuff: 'shower', isComplete: true}
+            ]
+        },
+        methods: {
+            switchSlotName: function(){
+                var slotName = this.dynamicslotname;
+//                console.log(slotName);
+                switch(slotName) {
+                    case 'default':
+                        slotName = 'content2';
+                        break;
+                    case 'content2':
+                        slotName = 'content3';
+                        break;
+                    case 'content3':
+                        slotName = 'default';
+                        break;
+                }
+                this.dynamicslotname = slotName;
+            }
+        }
+    });
+</script>

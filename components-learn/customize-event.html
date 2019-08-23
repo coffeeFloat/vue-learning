@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>自定义事件</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="customizeEvent">
+        <div>
+            <checkbox-base v-model="userCheckbox"></checkbox-base>
+            <div>{{userCheckbox}}</div>
+        </div>
+        <br>
+        <br>
+        <br>
+        <radio-base v-model="userSex"></radio-base>
+        <div>{{userSex}}</div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <input-base v-on:focus="inputFocus" v-model="inputContent" label="hhhh"></input-base>
+        <div>{{inputContent}}</div>
+    </div>
+</body>
+</html>
+<script>
+    // 1. 使用model属性处理输入控件与v-model的绑定
+    Vue.component('checkbox-base', {
+        model: {
+            prop: 'checked',
+            event: 'change'
+        },
+        props: {
+            checked: Boolean
+        },
+        template: `
+            <input type="checkbox" :checkbox="checked" v-on:change="$emit('change', $event.target.checked)">
+        `
+    });
+    Vue.component('radio-base', {
+        model: {
+            prop: 'checked',
+            event: 'change'
+        },
+        props: ['checked'],
+        template: `
+            <input type="radio" :checkbox="checked" v-on:change="$emit('change', $event.target.checked)">
+        `
+    })
+
+    //2. 将原生事件绑定到组件指定元素上。与$attrs有相似的功效
+    Vue.component('input-base', {
+        inheritAttrs: false,
+        props: ['label', 'value'],
+        computed: {
+            inputListeners: function(){
+                var self = this;
+                console.log(self.$listeners);
+                return Object.assign({},
+                    self.$listeners,
+                    {
+                        input: function(event){
+                            self.$emit('input', event.target.value)
+                        }
+                    }
+                )
+            }
+        },
+        template: `
+            <label>
+                {{label}}
+                <input type="text" v-bind="$attrs" :value="value" v-on="inputListeners">
+            </label>
+        `
+    });
+    var vm = new Vue({
+        el: '#customizeEvent',
+        data: {
+            userCheckbox: false,
+            userSex:'',
+            inputContent: ''
+        },
+        methods: {
+            inputFocus: function () {
+                console.log('Focused');
+            }
+        }
+    });
+</script>

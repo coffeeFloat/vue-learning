@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>处理边界情况</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <!--<div id="otherCase">
+        &lt;!&ndash;访问子组件或子元素&ndash;&gt;
+        <div>
+            <input-base label="文本" v-model="inputModel" :input-id="inputId"></input-base>
+            <button @click="getFocus">input获取焦点</button>
+        </div>
+    </div>-->
+</body>
+</html>
+<script>
+    /*Vue.component('input-base', {
+        props: ['label', 'value', 'inputId'],
+        template: `
+            <label>
+                {{label}}
+                <input type="text" v-bind="$attrs" :ref="inputId" :value="value" v-on:input="$emit('input', $event.target.value)">
+            </label>
+        `
+    });
+    var vm = new Vue({
+        el: '#otherCase',
+        data: {
+            inputModel: '',
+            inputId: 'inputText'
+        },
+        methods: {
+            getFocus: function () {
+                console.log(this.$refs[this.inputId]);
+                this.$refs[this.inputId].focus()
+            }
+        }
+    });*/
+</script>

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+
+    // Vue.extend传入选项对象中的mixins属性
+    var mixin1 = {
+        created: function () {
+            this.hello()
+        },
+        methods: {
+            hello: function(){
+                console.log('hello from mixin');
+            }
+        }
+    };
+    var Component = Vue.extend({
+        mixins: [mixin1]
+    });
+    var component = new Component();
+
+    // new Vue()中传入选项对象中的mixins属性
+    /*
+    * data: 同名数据采用本身，不同名数据全部采用
+    * 钩子函数： 全部调用，同名情况下先调用混入对象钩子
+    * methods等对象采用与data相同混入模式
+    * */
+    var minxin2 = {
+        data: function(){
+            return {
+                a: 1,
+                b: 2
+            }
+        },
+        created: function(){
+            console.log('created from mixin');
+        },
+        methods: {
+            foo: function(){
+                console.log('foo');
+            },
+            conficting: function () {
+                console.log('conficting from mixin');
+            }
+        }
+    }
+    var vm = new Vue({
+        mixins: [minxin2],
+        data: {
+            b: '22',
+            c: '3'
+        },
+        created: function(){
+            console.log('created from self');
+            console.log(this.$data);
+        },
+        methods: {
+            bar: function(){
+                console.log('bar');
+            },
+            conficting: function () {
+                console.log('conficting from self');
+            }
+        }
+    });
+    vm.foo();
+    vm.bar();
+    vm.conficting();
+
+
+</script>

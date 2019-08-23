@@ -39,7 +39,7 @@
 
         <user-name username="Hector"></user-name>
 
-        <!--组件prop 使用时采用‘-’连接，而非通风命名-->
+        <!--组件prop 使用时采用‘-’连接，而非驼峰命名-->
         <user-info-complex v-for="userInfo in userList" v-bind:key="userInfo.id" v-bind:user-info="userInfo"></user-info-complex>
 
         <!--组件内部传递事件规则： 组件内部定义事件名称并传递参数，组件外部使用该名称并定义事件，另接收参数-->
@@ -61,7 +61,7 @@
         <!--组件上使用插槽 传递内容-->
         <slot-content>哈哈哈哈哈哈哈哈哈哈哈哈哈哈</slot-content>
 
-        <!--component元素 is特性-->
+        <!--动态组件 component元素 is特性-->
         <!--is 指向组件名称-->
         <button v-for="tab in tabs"
                 v-bind:key="tab"
@@ -101,7 +101,7 @@
         template: '<div>{{username}}</div>'
     });
     Vue.component('user-info-complex', {
-        // props定义 不能是采用驼峰命名，使用时必须采用驼峰命名
+        // props定义 不能是采用驼峰命名
         props: ['user-info'],
         // 模板必须是在单个根元素内
         template: '<div>\

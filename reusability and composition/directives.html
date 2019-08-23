@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>directives</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <div id="myApp">
+        <input type="text" v-focus>
+        <user-list :list="userList"></user-list>
+        <button @click="addUser">添加用户</button>
+        <div v-upper-word>dfdfdfdfd</div>
+        <div v-demo="demoStyle">和地方的反对反对</div>
+    </div>
+</body>
+</html>
+<script>
+    Vue.directive('focus', {
+        bind: function (el) {
+            console.log(el);
+        },
+        inserted: function(el){
+            console.log(el);
+            el.focus();
+        }
+    });
+    Vue.component('user-list', {
+        props: ['list'],
+        template: `
+            <div>
+                <div v-for="(user, index) in list" :key="user.id" v-user-style:[user.isVip] ="index">{{user.name}}</div>
+            </div>
+        `,
+        directives: {
+            'user-style': {
+                bind: function(el, binding){
+                    console.log('bind: ',el, binding);
+                    el.style.color = binding.value % 2 == 0? 'red': 'green';
+                    el.style.fontSize = binding.arg? '28px': '16px';
+                },
+                inserted: function(el, binding, vnode){
+                    console.log('inserted: ',el, binding);
+                },
+                update: function(el, binding, vnode){
+                    console.log('update: ',el, binding);
+                },
+                componentUpdated: function(el, binding, vnode){
+                    console.log('componentUpdated: ',el, binding);
+                }
+            }
+        }
+    });
+    // 指令简写
+    // 该函数表示在bind与update钩子函数中调用同样的方法
+    Vue.directive('upper-word', function(el, binding){
+        console.log(el.innerHTML);
+        el.innerHTML = el.innerHTML.toUpperCase();
+    });
+    // 指令传值为对象 也可以传入对象字面量
+    Vue.directive('demo', function (el, binding) {
+        for(var k in binding.value){
+            el.style[k] = binding.value[k];
+        }
+    })
+    new Vue({
+        el: '#myApp',
+        data: {
+            userList: [
+                {id: 1, name: 'aaa', isVip: true},
+                {id: 2, name: 'bbb', isVip: false},
+                {id: 3, name: 'ccc', isVip: true}
+            ],
+            demoStyle: {
+                color: 'orange',
+                fontSize: '28px',
+                fontStyle: 'italic'
+            }
+        },
+        methods: {
+            addUser: function(){
+                this.userList.push({id: 4, name: 'dddd', isVip: false});
+                console.log(this.userList);
+            }
+        }
+    });
+</script>

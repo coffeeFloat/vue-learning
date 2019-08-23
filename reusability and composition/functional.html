@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>functional component</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+    <!--函数式组件不理解 。。。。-->
+    <!--<div id="myApp">
+        <demo1 :button-name="buttonName" ><div></div></demo1>
+    </div>-->
+</body>
+</html>
+<script>
+    /*Vue.component('demo1', {
+        functional: true,
+        props: ['button-name'],
+        render: function(createElement, context){
+            console.log(context.data);
+            return createElement({
+                props: ['button-name'],
+                methods: {
+                    clickBtn: function(){
+                        console.log('click the button');
+                    }
+                },
+                template: '<div></div>'
+            }, context.data, context.children);
+        }
+    });*/
+    var vm = new Vue({
+        el: '#myApp',
+        data: {
+            buttonName: 'hhh'
+        }
+    });
+</script>
