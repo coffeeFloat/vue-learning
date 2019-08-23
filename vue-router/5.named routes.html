@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>命名路由</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <script src="../node_modules/vue-router/dist/vue-router.min.js"></script>
+</head>
+<body>
+<div id="myApp">
+    <div>hello App!!</div>
+    <div>
+        <button @click="goToUser">go to user</button>
+    </div>
+    <div>
+        <router-link :to="{name: 'user', params: {id: userId}}">导航到user</router-link>
+    </div>
+    <router-view></router-view>
+</div>
+</body>
+</html>
+<script>
+    // 使用 router.push/router.replace/router.go() 代替router-link标签进行导航
+    const User = {
+        template: '<div>user component <span>{{$route.params.id}}</span></div>',
+    };
+    const Home = {template: '<div>Home component</div>'}
+    const router = new VueRouter({
+        routes: [
+            {
+                name: 'user',
+                path: '/user/:id',
+                component: User
+            }
+        ]
+    });
+    const myApp = new Vue({
+        el: '#myApp',
+        router: router,
+        data: {
+            userId: 1
+        },
+        methods: {
+            goToUser: function(){
+                router.replace({name: 'user', params: {id: myApp.userId}});
+                myApp.userId += 1;
+            }
+        }
+    })
+</script>

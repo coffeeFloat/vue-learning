@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>路由组件传参</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <script src="../node_modules/vue-router/dist/vue-router.min.js"></script>
+</head>
+<body>
+    <div id="myApp">
+        <div>
+            <router-link to="/">/</router-link>
+            <br>
+            <router-link to="/home/2">/home/2</router-link>
+            <br>
+            <router-link to="/home/static">/home/static</router-link>
+            <br>
+            <router-link to="/home/4">函数模式</router-link>
+        </div>
+        <router-view></router-view>
+    </div>
+</body>
+</html>
+<script>
+    const User = {
+        props: ['id'],
+        template: '<div>userId: {{id}}</div>'
+    }
+    /*
+    * 1.通过组件props获取参数取代与$route解耦，提高组件的灵活性
+    * */
+    const router = new VueRouter({
+        routes: [
+            {path: '/', component: User},
+
+            // props 布尔值
+            {path: '/home/:id', component: User, props: true},
+
+            // props 传递静态对象
+            {path: '/home/static', component: User, props: {id: 1}},
+
+            // props 传递方法，可以对传参进行处理
+            {path: '/home/:id', component: User, props: function(route){
+                return {id: route.params.id}
+            }}
+        ]
+    })
+    const myApp = new Vue({
+        el: '#myApp',
+        router: router
+    })
+</script>

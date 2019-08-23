@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>嵌套路由</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <script src="../node_modules/vue-router/dist/vue-router.min.js"></script>
+</head>
+<body>
+    <div id="myApp">
+        <div>Hello App!</div>
+        <div>
+            <router-link to="/user/1">go to user</router-link>
+        </div>
+        <router-view></router-view>
+    </div>
+</body>
+</html>
+<script>
+    const User = {
+        template: `<div>
+                        user component
+                        <span>{{$route.params.id}}</span>
+                        <div>
+                            <router-link to="/user/1/profile">go to profile</router-link>
+                            <router-link to="/user/1/posts">go to posts</router-link>
+                        </div>
+                        <div>
+                            <router-view></router-view>
+                        </div>
+                   </div>`
+    };
+    const UserHome = {template: '<div>Home</div>'}
+    const UserProfile = {template: '<div>user profile</div>'};
+    const UserPosts = {template: '<div>user posts</div>'};
+    var router = new VueRouter({
+        routes: [
+            {
+                path: '/user/:id',
+                component: User,
+                // children 选项参数与routes参数值一致
+                children: [
+                    // 当 路由为 /user/:id 匹配成功
+                    {
+                        path: '',
+                        component: UserHome
+                    },
+                    // 当路由为 /user/:id/profile 或者 /user/:id/posts匹配成功
+                    {
+                        path: 'profile',
+                        component: UserProfile
+                    },
+                    {
+                        path: 'posts',
+                        component: UserPosts
+                    }
+                ]
+            }
+        ]
+    })
+    var myApp = new Vue({
+        el: '#myApp',
+        router: router
+    })
+</script>

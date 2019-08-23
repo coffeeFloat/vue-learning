@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>动态路由匹配</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <script src="../node_modules/vue-router/dist/vue-router.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        <p>hello App!</p>
+        <div>
+            <router-link to="/user/1/18800000000">user one</router-link>
+            <router-link to="/user/2/18811111111">user two</router-link>
+            <router-link to="/dfdfd">哈哈哈哈哈</router-link>
+        </div>
+        <router-view></router-view>
+    </div>
+</body>
+</html>
+<script>
+    var User = {
+        template: '<div>user component <span>{{$route.params.userId}}</span> <span>{{$route.params.userPhone}}</span> </div>',
+
+        // 当只是路由参数发生变化时，组件会复用。所以需要使用watch或者beforeRouteUpdate监听当前路由变化
+        watch: {
+            '$route': function (to, from) {
+//                console.log(to, from);
+            }
+        },
+        beforeRouteUpdate: function(to, from, next){
+            console.log(to, from, next);
+        }
+    };
+    var SecondUser = {
+        template: '<div>secondUser</div>'
+    }
+    var NotFound = {
+        template: '<div>Page Not Found</div>'
+    }
+    var router = new VueRouter({
+        routes: [
+            // 路由优先级：当有路由重复时，排在前面的优先级高。所以通配符路由放在最后，常用来表示404页面
+            {path: '/user/:userId/:userPhone', component: User},
+            {path: '/user/:userId/:userPhone', component: SecondUser},
+            {path: '*', component: NotFound }
+        ]
+    })
+    var myApp = new Vue({
+        router: router,
+        el: '#app'
+    })
+</script>

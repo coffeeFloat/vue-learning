@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>编程式的导航</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <script src="../node_modules/vue-router/dist/vue-router.min.js"></script>
+</head>
+<body>
+    <div id="myApp">
+        <div>hello App!!</div>
+        <div>
+            <button @click="goToHome">go to home</button>
+            <button @click="goToUser(userId)">go to user</button>
+            <button @click="goAfter">前进一步</button>
+            <button @click="goBack">回退一步</button>
+            <button @click="currrentRouterReplace">替换当前路由</button>
+        </div>
+        <router-view></router-view>
+    </div>
+</body>
+</html>
+<script>
+    // 使用 router.push/router.replace/router.go() 代替router-link标签进行导航
+    const User = {
+        template: '<div>user component <span>{{$route.params.id}}</span></div>',
+    };
+    const Home = {template: '<div>Home component</div>'}
+    const router = new VueRouter({
+        routes: [
+            {
+                path: '/home',
+                component: Home
+            },
+            {
+                name: 'user',
+                path: '/user/:id',
+                component: User
+            }
+        ]
+    });
+    const myApp = new Vue({
+        el: '#myApp',
+        router: router,
+        data: {
+            userId: 1
+        },
+        methods: {
+            goToHome: function () {
+//                console.log(router);
+                // 两种方式意思一致
+//                router.push('home');
+                router.push({path: 'home'})
+            },
+            goToUser: function(id){
+                // 当使用name\params组合时，路由定义一定得添加name
+                // 只能是以下两种方式
+                router.push({name: 'user', params: {id: id}})
+                // router.push({path: `/user/${id}`});
+                myApp.userId += 1;
+            },
+            goAfter: function(){
+                router.go(1);
+            },
+            goBack: function(){
+                router.go(-1);
+            },
+            currrentRouterReplace: function(){
+                router.replace({path: 'home'})
+            }
+
+        }
+    })
+</script>

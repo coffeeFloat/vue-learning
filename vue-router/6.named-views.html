@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>命名视图</title>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <script src="../node_modules/vue-router/dist/vue-router.min.js"></script>
+</head>
+<body>
+    <div id="myApp">
+        <div>Hello App!</div>
+        <router-view></router-view>
+    </div>
+</body>
+</html>
+<script>
+    const UserSettings = {
+        template: `
+            <div>
+                <div>user settings</div>
+                <div>
+                    <router-link :to="{name: 'email'}">go to email</router-link>
+                    <router-link :to="{name: 'profile'}">go to profile</router-link>
+                </div>
+                <div>
+                    <router-view></router-view>
+                    <router-view name="other"></router-view>
+                </div>
+            </div>
+        `
+    };
+    const UserEmail = {
+        template: '<div>user Email</div>'
+    };
+    const UserProfile = {
+        template: '<div>user profile</div>'
+    };
+    const UserProfileReview = {
+        template: '<div>user profile review</div>'
+    };
+    const router = new VueRouter({
+        routes: [
+            {
+                name: 'userSettings',
+                path: '/userSettings',
+                component: UserSettings,
+                children: [
+                    {name: 'email', path: 'email', component: UserEmail},
+                    {
+                        name: 'profile',
+                        path: 'profile',
+                        components: {
+                            default: UserProfile,
+                            other: UserProfileReview
+                        }
+                    }
+                ]
+            }
+        ]
+    })
+    router.push({name: 'userSettings'})
+    const myApp = new Vue({
+        el: '#myApp',
+        router: router,
+        /*created: function(){
+            router.push({name: 'userSettings'})
+        },*/
+
+    });
+</script>
